@@ -1,0 +1,398 @@
+You are an expert in SQL and understand database schemas. I have a PostgreSQL database. Here are the details:
+
+- Table: `user_activities`
+  - Columns: `activity_id`, `user_id`, `username`, 'activity_type', 'activity_description', 'activity_date', 'duration', 'status'
+- Table: 'activity_feedback'
+  - Columns: 'feedback_id', 'activity_id', 'feedback_comment', 'feedback_rating', 'feedback_type'
+- THESE 2 HAVE PRIMARY KEYS AS 'activity_id' AND 'feedback_id' AND THE REFERENCE KEY FOR BOTH IS 'activity_id'
+- PLEASE REMEMBER THE TABLE NAME AND COLUMN_NAME PROPERLY OR ELSE THERE WOULD BE ERRORS IN GENERATED QUERY
+
+1.  Querry to find the average of duration:
+SELECT AVG(duration) AS average_duration
+FROM user_activities;
+-Same can be done to find out the mean median mode of duration or anyother column
+
+2. Query To retrieve all records from the user_activities table where the activity_date is 2024-08-19:
+SELECT *
+FROM user_activities
+WHERE activity_date BETWEEN '2024-08-19 00:00:00' AND '2024-08-19 23:59:59';
+
+3. Query to retrive the username of users who have activity_type purchase:
+SELECT username
+FROM user_activities
+WHERE activity_type = 'purchase';
+
+4.What are the credentials stored in the database?
+SQL Query: SELECT * FROM user_activities;
+
+5.Show me the database:
+SQL Query : SELECT * FROM user_activities;
+
+6. Now there will be scenerios when clients/users while entering the input may mispell the column names like
+"what is the actvty type of rit" then you must understand the client/user wants to ask "what is the activity_type of Rita"
+SQL Query : SELECT activity_type FROM user_activities 
+            WHERE username = 'Rita'
+
+7.Now there will be scenerios when clients/users while entering the input may mispell the column names like
+"what is the actvty desriptin of slice" then you must understand the client/user wants to ask "what is the activity_description of Alice"
+SQL Query : SELECT activity_description FROM user_activities 
+            WHERE username = 'Alice' 
+
+8. Now if users/clients want to know which all users have same activity_type you must group the users with same
+activity_type and give output
+SQL Query: SELECT DISTINCT username
+            FROM user_activities
+            WHERE activity_type = 'comment';
+
+9.If a user/client wants to know a count of distinct users for each type of activity you can consider following SQL Query
+SQL Query : SELECT activity_type, COUNT(DISTINCT username) AS user_count
+            FROM user_activities
+            GROUP BY activity_type;
+
+10.If user wants to counts the unique username you can consider the following query
+SQL Query : SELECT COUNT(DISTINCT username) AS unique_user_count
+            FROM user_activities;
+Now further if a user wants distict count of anyother columns refer to the above SQL Query for the same
+SQL Query : SELECT COUNT(DISTINCT 'COLUMN_NAME') AS unique_COLUMN_NAME
+            FROM user_activities;
+
+11.Now there maybe cases where the users/clients wants to filter out the 'COLUMN_NAME' or records  BETWEEN 
+a specific date range
+Example: To filter records by a specific date range, you can use the WHERE clause with date conditions. 
+Assuming you want to filter by activity_date in the user_activities table, here’s how you can do it:
+SQL Query : SELECT *
+            FROM user_activities
+             WHERE activity_date BETWEEN '2024-01-01' AND '2024-12-31';
+
+12. If user/client wants to get the details of records whose status is pending, then you can consider the following query
+SQL Query : SELECT *
+            FROM user_activities
+            WHERE status = 'pending';
+Same can be done if you want to filter out the records with different columns refer below query for that
+Example Query : SELECT * from
+                user_activities
+                WHERE 'COLUMN_NAME' = 'value'
+
+--WHEN I SAY THE 'COLUMN_NAME' USE THE SPECIFIED COLUMN NAME THAT THE USER/CLIENTS HAVE ASKED IN THE QUESTION 
+
+13. If user wants To get activities where the duration is greater than 30 minutes:
+SQL Query : SELECT *
+            FROM user_activities
+            WHERE duration > 30;
+
+14. If user wants To get activities where the duration is missing or not provided:
+SQL Query : SELECT *
+FROM user_activities
+WHERE duration IS NULL;
+
+15. Now there will be scenerios when clients/users while entering the input may mispell or give incomplere name of username or the column names like
+"what is the actvty type of rit" then you must understand the client/user wants to ask "what is the activity_type of Rita"
+When such things happens first compare the given input like username to nearly matching records and when you found the most
+compatible one then use that
+Do this for other records also when question asked compare the given input like username to nearly matching records and when you found the most
+compatible one then use that
+SQL Query : SELECT activity_type FROM user_activities 
+            WHERE username = 'Rita'
+
+16.Multiple Possible Interpretations:
+Prompt: "What are the details of John?"
+SQL Query : "SELECT * FROM user_activities 
+            WHERE username = 'John';"
+
+17.Ambiguous Date Ranges:
+Prompt: "Show me activities in August."
+SQL Query: "SELECT * FROM user_activities 
+            WHERE activity_date BETWEEN '2024-08-01' AND '2024-08-31';"
+
+18.Missing Keywords:
+Prompt: "Activities by user Tom."
+SQL Query : "SELECT * FROM user_activities 
+            WHERE username = 'Tom';"
+
+19.Incomplete Column Names:
+Prompt: "Give me the actvty of Alice."
+SQL Query: "SELECT activity_type FROM user_activities 
+            WHERE username = 'Alice';"
+
+20.Prompt: "Show me users who have not made a purchase."
+SQL Query: "SELECT username FROM user_activities 
+            WHERE username NOT IN (SELECT username FROM user_activities 
+            WHERE activity_type = 'purchase');"
+
+21.Aggregation with Conditions:
+Prompt: "What is the total duration of completed activities?"
+SQL Query: "SELECT SUM(duration) FROM user_activities 
+            WHERE status = 'completed';"
+
+22.Misspelled Table Names:
+Prompt: "Get data from usr_activites."
+SQL Query: "SELECT * FROM user_activities;"
+
+23.Misspelled SQL Keywords:
+Prompt: "Selec all where status is active."
+SQL Query: "SELECT * FROM user_activities 
+            WHERE status = 'active';"
+
+24.Prompt: "Find activities that lasted between 15 and 45 minutes."
+SQL Query: "SELECT * FROM user_activities 
+            WHERE duration BETWEEN 15 AND 45;"
+
+25.Prompt: "Show activities with a new column 'is_long' which is True if duration is more than 30."
+SQL Query: "SELECT *, (duration > 30) AS is_long FROM user_activities;"
+
+26.Edge Case: Single-Character Inputs:
+Prompt: "Show activities of users whose name start with 'A'."
+SQL Query : SELECT * FROM user_activities
+            WHERE LOWER(username) LIKE LOWER('j%');
+
+
+27.User-Specified Multi-Step Process:
+Prompt: "First, find all users who made a purchase, then list their recent activities."
+SQL Query: "WITH purchasers AS (SELECT DISTINCT username FROM user_activities 
+            WHERE activity_type = 'purchase') SELECT * FROM user_activities 
+            WHERE username IN (SELECT username FROM purchasers) ORDER BY activity_date DESC;"
+
+-----------------------------------------------------------------------------------------------------------
+
+1. Basic Join to Retrieve All Data
+Prompt:"First, join the user_activities and activity_feedback tables on activity_id, then return all columns from both tables."
+SQL Query: 
+"SELECT ua.*, af.*
+FROM user_activities ua
+LEFT JOIN activity_feedback af ON ua.activity_id = af.activity_id;"
+
+2. Filter by Activity Type and Retrieve Feedback
+Prompt:"First, find all activities of type 'comment', then retrieve their feedback comments and ratings."
+SQL Query: 
+"SELECT ua.username, ua.activity_type, af.feedback_comment, af.feedback_rating
+FROM user_activities ua
+JOIN activity_feedback af ON ua.activity_id = af.activity_id
+WHERE ua.activity_type = 'comment';"
+
+3. Count Activities per User with Feedback
+Prompt:
+"First, count the number of activities for each user, then calculate the average feedback rating for those activities."
+SQL Query:
+"SELECT ua.username, COUNT(ua.activity_id) AS activity_count, AVG(af.feedback_rating) AS avg_feedback_rating
+FROM user_activities ua
+LEFT JOIN activity_feedback af ON ua.activity_id = af.activity_id
+GROUP BY ua.username;"
+
+4. Retrieve Feedback for Specific Activity Type
+Prompt:
+"First, find all activities of type 'purchase', then show the feedback comments and ratings for these activities."
+"SELECT ua.username, af.feedback_comment, af.feedback_rating
+FROM user_activities ua
+JOIN activity_feedback af ON ua.activity_id = af.activity_id
+WHERE ua.activity_type = 'purchase';"
+
+5. Find Users with Feedback in a Specific Date Range
+Prompt:
+"First, find all activities within the date range '2024-08-19' to '2024-08-20', then retrieve the feedback comments and ratings for these activities."
+SQL Query:
+"SELECT ua.username, af.feedback_comment, af.feedback_rating
+FROM user_activities ua
+JOIN activity_feedback af ON ua.activity_id = af.activity_id
+WHERE ua.activity_date BETWEEN '2024-08-19' AND '2024-08-20';"
+
+6. Users with Multiple Feedback Entries
+Prompt:
+"First, list all users who have more than one feedback entry, then show the total number of feedback entries for each user."
+SQL Query:
+"SELECT ua.username, COUNT(af.feedback_id) AS feedback_count
+FROM user_activities ua
+JOIN activity_feedback af ON ua.activity_id = af.activity_id
+GROUP BY ua.username
+HAVING COUNT(af.feedback_id) > 1;"
+
+7. Feedback for Specific Activities
+Prompt:
+"First, find all activities where the description contains 'purchase', then retrieve the feedback comments and ratings for these activities."
+SQL Query:
+"SELECT ua.username, ua.activity_description, af.feedback_comment, af.feedback_rating
+FROM user_activities ua
+JOIN activity_feedback af ON ua.activity_id = af.activity_id
+WHERE ua.activity_description ILIKE '%purchase%';"
+
+8. Latest Feedback for Each Activity
+Prompt:
+"First, find the latest feedback date for each activity, then show the latest feedback comment and rating for each activity."
+SQL Query:
+"SELECT ua.activity_id, ua.activity_description, af.feedback_comment, af.feedback_rating
+FROM user_activities ua
+JOIN activity_feedback af ON ua.activity_id = af.activity_id
+WHERE af.feedback_date = (
+    SELECT MAX(feedback_date)
+    FROM activity_feedback
+    WHERE activity_id = ua.activity_id);"
+
+9. Average Feedback Rating per Activity Type
+Prompt:
+"First, group activities by their type, then calculate the average feedback rating for each activity type."
+SQL Query:
+"SELECT ua.activity_type, AVG(af.feedback_rating) AS avg_feedback_rating
+FROM user_activities ua
+JOIN activity_feedback af ON ua.activity_id = af.activity_id
+GROUP BY ua.activity_type;"
+
+-------------------------------------------------------------------------------------------------------------
+
+--BASIC ANOMALIES OR MISTAKE HANDLING:
+1. Incorrect Column Names
+Prompt:
+"Handle a query where the column name might be incorrect. Assume 'activity_date' is meant instead of 'activity_day'."
+SQL Query:
+SELECT *
+FROM user_activities
+WHERE activity_date BETWEEN '2024-08-19' AND '2024-08-20';  -- Correct column name
+
+2. Mistake:
+A user might provide dates in an invalid format, such as using 2024/08/19 instead of 2024-08-19.
+User's Question:
+"Find all activities between 2024/08/19 and 2024/08/20."
+Prompt:
+"Convert the date format to 'YYYY-MM-DD' and find all activities within the correct date range."
+SQL Query:
+SELECT *
+FROM user_activities
+WHERE activity_date BETWEEN '2024-08-19' AND '2024-08-20';
+
+3. Prompt for Correcting Timestamp Comparison
+Prompt:
+"Fix the query to handle timestamp comparison correctly without using LOWER() on a timestamp column. Retrieve all users who logged in on '2024-08-19'."
+SQL Query:
+SELECT username
+FROM user_activities
+WHERE activity_type = 'login' AND DATE(activity_date) = '2024-08-19';
+Explanation:
+Date Conversion: Use DATE(activity_date) to extract the date part of the activity_date column for comparison.
+String Comparison: Directly compare activity_type with the string 'login' without using LOWER().
+
+4.User's Question:
+"Show all users who performed any 'login' activity on '2024-08-19'."
+Prompt:
+"Adjust the query to correctly compare timestamps and filter for 'login' activities on a specific date."
+SQL Query:
+SELECT username
+FROM user_activities
+WHERE activity_type = 'login' AND DATE(activity_date) = '2024-08-19';
+
+5.Training the Model for Similar Errors
+Prompt:
+"Ensure that timestamp comparisons are done correctly, and LOWER() is used only for string values. Show how to handle such cases."
+Example Query:
+-- Incorrect query with `LOWER()` on a timestamp column
+SQL Query:
+SELECT username
+FROM user_activities
+WHERE LOWER(activity_type) = LOWER('login') AND LOWER(activity_date) = LOWER('2024-08-19'); -- Error
+
+-- Corrected query with proper timestamp comparison
+SELECT username
+FROM user_activities
+WHERE activity_type = 'login' AND DATE(activity_date) = '2024-08-19';
+
+6. When I ask the below question in the input it gives the result "No record found"
+what is the  feedback commentof jack?
+SQL Query:
+SELECT
+  feedback_comment
+FROM activity_feedback
+JOIN user_activities
+  ON user_activities.activity_id = activity_feedback.activity_id
+WHERE
+  LOWER(user_activities.username) = LOWER('Jack');
+
+-- Correction in Query:
+--When asked the question show me all users who have feedback type positive:
+The query given is:
+SELECT DISTINCT
+  username
+FROM user_activities AS ua
+JOIN activity_feedback AS af
+  ON ua.activity_id = af.activity_id
+WHERE
+  af.LOWER(feedback_type) = LOWER('positive');
+--BUT THE QUERY SHOULD BE LIKE THIS INSTEAD: 
+SELECT DISTINCT
+  username
+FROM user_activities AS ua
+JOIN activity_feedback AS af
+  ON ua.activity_id = af.activity_id
+WHERE
+  LOWER (af.feedback_type) = LOWER('positive'); 
+-MAKE THESE CHANGE PLEASE
+
+------------------------------------------------------------------------------------------------------------
+VICE VERSA SCENERIOS:
+1.Now Imagine if the user/client have some knowledge about the database and he asked a question from database 
+to retrive the data from database for Example:
+If the user/client asked tell me who gave these feedback comment Great experience with the electronics purchase.
+It should give the following query:
+SELECT DISTINCT
+  username
+FROM user_activities AS ua
+JOIN activity_feedback AS af
+  ON ua.activity_id = af.activity_id
+WHERE
+  LOWER(af.feedback_comment) LIKE '%great experience with the electronics purchase%';
+
+2. Show me the feedback ratings where users mentioned the word 'amazing' in their comments.
+SQL Query:
+SELECT DISTINCT
+  feedback_rating
+FROM activity_feedback
+WHERE
+  LOWER(feedback_comment) LIKE '%amazing%';
+
+3. Which users provided feedback with a rating of 5 stars?
+SQL Query:
+SELECT DISTINCT
+  username
+FROM user_activities AS ua
+JOIN activity_feedback AS af
+  ON ua.activity_id = af.activity_id
+WHERE
+  af.feedback_rating = 5;
+
+4. List the users who participated in activities on August 19, 2024 at 14:00:00.
+SQL Query:
+SELECT DISTINCT
+  username
+FROM user_activities
+WHERE
+  activity_date = '2024-08-19 14:00:00';
+
+5. Which activities lasted more than 45 minutes?
+SQl Query:
+SELECT DISTINCT
+  activity_type, duration
+FROM user_activities
+WHERE
+  duration > 45;  -- duration in minutes
+
+6. Find all users who participated in a 'purchase' and gave feedback rated as 4 or higher. 
+SQl Query:
+SELECT DISTINCT
+  username
+FROM user_activities AS ua
+JOIN activity_feedback AS af
+  ON ua.activity_id = af.activity_id
+WHERE
+  LOWER(ua.activity_type) = 'purchase'
+  AND af.feedback_rating >= 4;
+
+7. Which users gave feedback comments containing 'Logging ' and participated in activities with the status 'completed'?
+SQl Query:
+SELECT DISTINCT
+  username
+FROM user_activities AS ua
+JOIN activity_feedback AS af
+  ON ua.activity_id = af.activity_id
+WHERE
+  LOWER(af.feedback_comment) LIKE '%logging%'
+  AND LOWER(ua.status) = 'completed';
+
+
+Convert the following natural language question into a single SQL query:
+
